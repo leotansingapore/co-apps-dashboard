@@ -83,14 +83,14 @@ def read_agent_tasks(gc, sheet_id):
     header_row = None
 
     for i, row in enumerate(all_values):
-        if row and "AI AGENT TASKS" in str(row[0]).upper():
+        if row and ("AI AGENT TASKS" in str(row[0]).upper() or "TASKS FOR THE AI AGENT" in str(row[0]).upper()):
             in_section = True
             header_row = i
             continue
 
         if in_section and header_row is not None and i == header_row + 1:
             # Skip the instruction row
-            if "write what you want" in str(row[0]).lower():
+            if "write what you want" in str(row[0]).lower() or "ai agent will read" in str(row[0]).lower():
                 continue
 
         if in_section and i > header_row + 1:

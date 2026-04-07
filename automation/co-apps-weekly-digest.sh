@@ -118,4 +118,8 @@ PAYLOAD
 )" > /dev/null 2>&1
 
 log "Weekly digest sent"
+
+# Sync dashboard repo with latest scripts
+"$HOME/.local/bin/co-apps-sync-dashboard.sh" 2>> "$LOG_FILE" || log "Dashboard sync failed (non-fatal)"
+
 echo "CO Apps weekly digest sent: $TODAY"

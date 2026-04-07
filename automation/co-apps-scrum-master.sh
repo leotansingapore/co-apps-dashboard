@@ -364,4 +364,7 @@ if [[ -d "$DASHBOARD_DIR/.git" ]]; then
   cd "$HOME"
 fi
 
+# ── 6. Sync dashboard repo ─────────────────────────────────────────
+"$HOME/.local/bin/co-apps-sync-dashboard.sh" 2>> "$LOG_FILE" || log "Dashboard sync failed (non-fatal)"
+
 echo "CO Apps scrum master agenda sent: $TODAY"
