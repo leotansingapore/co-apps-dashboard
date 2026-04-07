@@ -475,4 +475,171 @@ PAYLOAD
 )" > /dev/null 2>&1
 
 log "Meeting summary sent to Lark"
+
+# ── 8. Auto-fill Google Sheet from transcript ──────────────────────
+log "Auto-filling Google Sheet from transcript"
+
+SHEET_DATA=$(claude -p --model sonnet "$(cat "$TMPDIR_REPORT/transcript.txt")
+
+You are extracting structured meeting data from a CO Apps team meeting transcript. The team members are:
+- Jilian (HourHive Buddy)
+- Warren (Catalyst Opus)
+- Leo (Overall / Cross-app)
+- Others may be unassigned to Sales Portal, Catalyst Refresh Glow, Partner Hub
+
+Output ONLY a JSON object with these exact keys (no markdown, no explanation, just raw JSON):
+
+{
+  \"team_updates\": [
+    {\"person\": \"Jilian\", \"app\": \"HourHive Buddy\", \"did_last_week\": \"...\", \"doing_this_week\": \"...\", \"blockers\": \"...\", \"help_needed\": \"\"},
+    {\"person\": \"Warren\", \"app\": \"Catalyst Opus\", \"did_last_week\": \"...\", \"doing_this_week\": \"...\", \"blockers\": \"...\", \"help_needed\": \"\"},
+    {\"person\": \"Leo\", \"app\": \"Overall / Cross-app\", \"did_last_week\": \"...\", \"doing_this_week\": \"...\", \"blockers\": \"...\", \"help_needed\": \"\"}
+  ],
+  \"prd_progress\": [
+    {\"app\": \"HourHive Buddy\", \"current_state\": \"...\", \"next_milestone\": \"...\", \"percent\": \"...\", \"blockers\": \"\"},
+    {\"app\": \"Catalyst Opus\", \"current_state\": \"...\", \"next_milestone\": \"...\", \"percent\": \"...\", \"blockers\": \"\"},
+    {\"app\": \"Sales Portal\", \"current_state\": \"...\", \"next_milestone\": \"...\", \"percent\": \"...\", \"blockers\": \"\"},
+    {\"app\": \"Catalyst Refresh Glow\", \"current_state\": \"...\", \"next_milestone\": \"...\", \"percent\": \"...\", \"blockers\": \"\"},
+    {\"app\": \"Partner Hub\", \"current_state\": \"...\", \"next_milestone\": \"...\", \"percent\": \"...\", \"blockers\": \"\"}
+  ],
+  \"decisions\": [
+    {\"decision\": \"...\", \"options\": \"...\", \"outcome\": \"...\", \"owner\": \"...\", \"deadline\": \"\"}
+  ],
+  \"discussion_topics\": [
+    {\"topic\": \"...\", \"raised_by\": \"...\", \"outcome\": \"\"}
+  ],
+  \"action_items\": [
+    {\"task\": \"...\", \"owner\": \"...\", \"app\": \"...\", \"due_by\": \"\", \"notes\": \"\"}
+  ],
+  \"agent_tasks\": [
+    {\"task\": \"...\", \"app\": \"...\", \"priority\": \"High|Medium|Low\", \"details\": \"\"}
+  ]
+}
+
+Rules:
+- Fill in what was discussed. Leave empty string if not mentioned.
+- For percent, use values like 50%, 70%, etc.
+- For agent_tasks, extract any requests for automated/AI work.
+- If a section had no relevant discussion, use an empty array [].
+- Output ONLY the JSON, no markdown fences, no explanation.") 2>> "$LOG_FILE"
+
+if [[ -n "$SHEET_DATA" ]]; then
+  cd "$HOME/Documents/New project" && python3 << PYEOF
+import json, sys, os
+sys.path.insert(0, os.path.join(os.environ["HOME"], "Documents/New project/tools"))
+from lib.sheets import get_sheets_client
+
+sheet_id = open(os.path.join(os.environ["HOME"], ".local/share/co-apps-meeting/sheet_id.txt")).read().strip()
+gc = get_sheets_client()
+ss = gc.open_by_key(sheet_id)
+ws = ss.worksheet("$TODAY")
+
+try:
+    data = json.loads('''$SHEET_DATA''')
+except json.JSONDecodeError:
+    print("Failed to parse sheet data JSON", file=sys.stderr)
+    sys.exit(0)
+
+all_vals = ws.get_all_values()
+
+# Helper: find section row
+def find_row(label):
+    for i, row in enumerate(all_vals):
+        if label in str(row[0]):
+            return i + 1  # 1-indexed
+    return None
+
+# Fill team updates (rows 9-14 based on known structure)
+team_row = find_row("TEAM UPDATES")
+if team_row and data.get("team_updates"):
+    for update in data["team_updates"]:
+        person = update.get("person", "")
+        # Find the row matching this person
+        for i in range(team_row + 1, team_row + 8):
+            if i <= len(all_vals) and person.lower() in str(all_vals[i-1][0]).lower():
+                ws.update(f"B{i}:E{i}", [[
+                    update.get("did_last_week", ""),
+                    update.get("doing_this_week", ""),
+                    update.get("blockers", ""),
+                    update.get("help_needed", ""),
+                ]], value_input_option="USER_ENTERED")
+                break
+
+# Fill PRD progress
+prd_row = find_row("PRD PROGRESS")
+if prd_row and data.get("prd_progress"):
+    for prog in data["prd_progress"]:
+        app = prog.get("app", "")
+        for i in range(prd_row + 1, prd_row + 8):
+            if i <= len(all_vals) and app.lower() in str(all_vals[i-1][0]).lower():
+                ws.update(f"B{i}:E{i}", [[
+                    prog.get("current_state", ""),
+                    prog.get("next_milestone", ""),
+                    prog.get("percent", ""),
+                    prog.get("blockers", ""),
+                ]], value_input_option="USER_ENTERED")
+                break
+
+# Fill decisions
+dec_row = find_row("DECISIONS TO MAKE")
+if dec_row and data.get("decisions"):
+    for j, dec in enumerate(data["decisions"][:4]):
+        r = dec_row + 1 + j
+        ws.update(f"A{r}:E{r}", [[
+            dec.get("decision", ""),
+            dec.get("options", ""),
+            dec.get("outcome", ""),
+            dec.get("owner", ""),
+            dec.get("deadline", ""),
+        ]], value_input_option="USER_ENTERED")
+
+# Fill discussion topics
+disc_row = find_row("OPEN DISCUSSION")
+if disc_row and data.get("discussion_topics"):
+    for j, topic in enumerate(data["discussion_topics"][:5]):
+        r = disc_row + 1 + j
+        ws.update(f"A{r}:D{r}", [[
+            topic.get("topic", ""),
+            topic.get("raised_by", ""),
+            "",
+            topic.get("outcome", ""),
+        ]], value_input_option="USER_ENTERED")
+
+# Fill action items
+action_row = find_row("NEW ACTION ITEMS")
+if action_row and data.get("action_items"):
+    for j, item in enumerate(data["action_items"][:8]):
+        r = action_row + 1 + j
+        ws.update(f"A{r}:E{r}", [[
+            item.get("task", ""),
+            item.get("owner", ""),
+            item.get("app", ""),
+            item.get("due_by", ""),
+            item.get("notes", ""),
+        ]], value_input_option="USER_ENTERED")
+
+# Fill agent tasks
+agent_row = find_row("TASKS FOR THE AI AGENT")
+if agent_row and data.get("agent_tasks"):
+    for j, task in enumerate(data["agent_tasks"][:6]):
+        r = agent_row + 2 + j  # skip instruction row
+        ws.update(f"A{r}:E{r}", [[
+            task.get("task", ""),
+            task.get("app", ""),
+            task.get("priority", ""),
+            "To Do",
+            task.get("details", ""),
+        ]], value_input_option="USER_ENTERED")
+
+print("Sheet auto-filled from transcript")
+PYEOF
+  log "Google Sheet auto-filled"
+else
+  log "No sheet data extracted (non-fatal)"
+fi
+
+# ── 9. Dispatch Ralph tasks from sheet ─────────────────────────────
+log "Dispatching Ralph tasks"
+cd "$HOME/Documents/New project" && python3 "$HOME/.local/bin/co-apps-ralph-dispatch.py" 2>> "$LOG_FILE" || log "Ralph dispatch failed (non-fatal)"
+
 echo "CO Apps post-meeting analysis complete: $TODAY"

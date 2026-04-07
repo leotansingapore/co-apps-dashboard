@@ -63,7 +63,7 @@ def main():
 
     # ── Header ──
     r([f"CO Apps Weekly Scrum -- {TODAY}", "", "", "", "", ""])
-    r(["Meeting: 4:00-5:00 PM SGT | Google Meet: meet.google.com/igs-arbe-ntm", "", "", "", "", ""])
+    r(['=HYPERLINK("https://meet.google.com/igs-arbe-ntm","Meeting: 4:00-5:00 PM SGT | Click to join Google Meet")', "", "", "", "", ""])
     r(["", "", "", "", "", ""])
 
     # ── Section 1: Follow-ups ──
@@ -98,15 +98,17 @@ def main():
     r(["App", "Current state (where we are)", "Next milestone (where we want to be)", "% complete", "What's blocking us?", "PRD link"])
 
     prd_links = {
-        "HourHive Buddy": "github.com/leotansingapore/co-apps-dashboard/blob/main/prds/hourhive-buddy/lovable-plan.md",
-        "Catalyst Opus": "github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-opus/PRD.md",
-        "Sales Portal": "github.com/leotansingapore/co-apps-dashboard/blob/main/prds/outsource-sales-portal-magic/lovable-plan.md",
-        "Catalyst Refresh Glow": "github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-refresh-glow/lovable-plan.md",
-        "Partner Hub": "github.com/leotansingapore/co-apps-dashboard/blob/main/prds/partner-hub-40/lovable-plan.md",
+        "HourHive Buddy": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/hourhive-buddy/PRD.md",
+        "Catalyst Opus": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-opus/PRD.md",
+        "Sales Portal": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/outsource-sales-portal-magic/PRD.md",
+        "Catalyst Refresh Glow": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-refresh-glow/PRD.md",
+        "Partner Hub": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/partner-hub-40/PRD.md",
     }
 
     for app in APPS:
-        r([app["name"], "", "", "", "", prd_links.get(app["name"], "")])
+        link = prd_links.get(app["name"], "")
+        formula = f'=HYPERLINK("{link}","View PRD")' if link else ""
+        r([app["name"], "", "", "", "", formula])
     r(["", "", "", "", "", ""])
 
     # ── Section 4: Decisions ──
@@ -133,8 +135,8 @@ def main():
     for _ in range(6):
         r(["", "", "", "", "", ""])
 
-    # Write all rows
-    ws.update(range_name="A1", values=rows)
+    # Write all rows (USER_ENTERED so formulas like HYPERLINK render)
+    ws.update(range_name="A1", values=rows, value_input_option="USER_ENTERED")
 
     # ── Formatting ──
     # Title
@@ -176,9 +178,103 @@ def main():
                         "textFormat": {"bold": True, "fontSize": 10},
                     })
 
+    # ── Dropdowns (data validation) ──
+    app_choices = [
+        "HourHive Buddy",
+        "Catalyst Opus",
+        "Sales Portal",
+        "Catalyst Refresh Glow",
+        "Partner Hub",
+        "General / Cross-app",
+    ]
+    priority_choices = ["High", "Medium", "Low"]
+    status_choices = ["To Do", "In Progress", "Done", "Blocked"]
+    owner_choices = ["Jilian", "Warren", "Leo", ""]
+
+    percent_choices = ["0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"]
+
+    # Find row ranges for each section
+    agent_task_rows = []
+    action_item_rows = []
+    prd_progress_rows = []
+    for i, row in enumerate(rows):
+        if row[0] == "TASKS FOR THE AI AGENT":
+            agent_task_rows = list(range(i + 2, i + 2 + 6))
+        if row[0] == "NEW ACTION ITEMS (fill in during meeting)":
+            action_item_rows = list(range(i + 1, i + 1 + 8))
+        if row[0] == "PRD PROGRESS -- WHERE WE ARE vs WHERE WE WANT TO BE":
+            prd_progress_rows = list(range(i + 2, i + 2 + 5))  # 5 app rows
+
+    def make_dropdown(sheet_id, row_start, row_end, col, values):
+        """Create a data validation dropdown rule."""
+        return {
+            "setDataValidation": {
+                "range": {
+                    "sheetId": sheet_id,
+                    "startRowIndex": row_start - 1,
+                    "endRowIndex": row_end,
+                    "startColumnIndex": col,
+                    "endColumnIndex": col + 1,
+                },
+                "rule": {
+                    "condition": {
+                        "type": "ONE_OF_LIST",
+                        "values": [{"userEnteredValue": v} for v in values],
+                    },
+                    "showCustomUi": True,
+                    "strict": False,
+                },
+            }
+        }
+
+    dropdown_requests = []
+
+    if agent_task_rows:
+        first = agent_task_rows[0] + 1  # 1-indexed
+        last = agent_task_rows[-1] + 1
+        # App dropdown (column B = index 1)
+        dropdown_requests.append(make_dropdown(ws.id, first, last, 1, app_choices))
+        # Priority dropdown (column C = index 2)
+        dropdown_requests.append(make_dropdown(ws.id, first, last, 2, priority_choices))
+        # Status dropdown (column D = index 3)
+        dropdown_requests.append(make_dropdown(ws.id, first, last, 3, status_choices))
+
+    if action_item_rows:
+        first = action_item_rows[0] + 1
+        last = action_item_rows[-1] + 1
+        # App dropdown (column C = index 2)
+        dropdown_requests.append(make_dropdown(ws.id, first, last, 2, app_choices))
+        # Owner dropdown (column B = index 1)
+        dropdown_requests.append(make_dropdown(ws.id, first, last, 1, owner_choices + ["Lovable Bot"]))
+        # Due by date picker (column D = index 3)
+        dropdown_requests.append({
+            "setDataValidation": {
+                "range": {
+                    "sheetId": ws.id,
+                    "startRowIndex": first - 1,
+                    "endRowIndex": last,
+                    "startColumnIndex": 3,
+                    "endColumnIndex": 4,
+                },
+                "rule": {
+                    "condition": {
+                        "type": "DATE_IS_VALID",
+                    },
+                    "showCustomUi": True,
+                    "strict": False,
+                },
+            }
+        })
+
+    if prd_progress_rows:
+        first = prd_progress_rows[0] + 1
+        last = prd_progress_rows[-1] + 1
+        # % complete dropdown (column D = index 3)
+        dropdown_requests.append(make_dropdown(ws.id, first, last, 3, percent_choices))
+
     # Column widths
     body = {
-        "requests": [
+        "requests": dropdown_requests + [
             {"updateDimensionProperties": {
                 "range": {"sheetId": ws.id, "dimension": "COLUMNS",
                           "startIndex": 0, "endIndex": 1},
