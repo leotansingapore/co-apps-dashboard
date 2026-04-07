@@ -183,6 +183,102 @@ else
   SHEET_URL="https://docs.google.com/spreadsheets/d/1HaT_811PWs-4p-uc4VUM-i6PYLRbwV0YHjt8DjWfIiM"
 fi
 
+# ── 3.6. Pre-fill sheet with GitHub commit summaries ──────────────
+log "Pre-filling sheet with GitHub activity"
+cd "$HOME/Documents/New project" && python3 << 'PYEOF' 2>> "$LOG_FILE" || log "Sheet pre-fill failed (non-fatal)"
+import json, subprocess, sys, os
+sys.path.insert(0, os.path.join(os.environ["HOME"], "Documents/New project/tools"))
+from lib.sheets import get_sheets_client
+from datetime import datetime, timedelta
+
+sheet_id = open(os.path.join(os.environ["HOME"], ".local/share/co-apps-meeting/sheet_id.txt")).read().strip()
+today = datetime.now().strftime("%Y-%m-%d")
+since = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%dT00:00:00Z")
+
+gc = get_sheets_client()
+ss = gc.open_by_key(sheet_id)
+ws = ss.worksheet(today)
+all_vals = ws.get_all_values()
+
+# Map contributors to apps
+contributor_map = {
+    "jilian garette": ("Jilian", "HourHive Buddy"),
+    "jilian": ("Jilian", "HourHive Buddy"),
+    "warren apit": ("Warren", "Catalyst Opus"),
+    "warren": ("Warren", "Catalyst Opus"),
+}
+
+repos = [
+    ("leotansingapore/hourhive-buddy", "HourHive Buddy"),
+    ("leotansingapore/catalyst-opus", "Catalyst Opus"),
+    ("leotansingapore/outsource-sales-portal-magic", "Sales Portal"),
+    ("leotansingapore/catalyst-refresh-glow", "Catalyst Refresh Glow"),
+    ("leotansingapore/partner-hub-40", "Partner Hub"),
+]
+
+# Gather commit summaries per app
+app_summaries = {}
+for repo_full, app_name in repos:
+    r = subprocess.run(
+        ["gh", "api", f"repos/{repo_full}/commits?since={since}&per_page=30",
+         "--jq", '.[] | "\(.commit.author.name): \(.commit.message | split("\n")[0])"'],
+        capture_output=True, text=True, timeout=15
+    )
+    commits = [c.strip() for c in r.stdout.strip().split("\n") if c.strip()] if r.stdout.strip() else []
+    if commits:
+        # Summarize: group by author, max 3 commits each
+        by_author = {}
+        for c in commits:
+            parts = c.split(": ", 1)
+            author = parts[0] if len(parts) > 1 else "Unknown"
+            msg = parts[1] if len(parts) > 1 else c
+            by_author.setdefault(author, []).append(msg)
+        summary_parts = []
+        for author, msgs in by_author.items():
+            top = msgs[:3]
+            summary_parts.append(f"{author}: " + "; ".join(top))
+        app_summaries[app_name] = ". ".join(summary_parts)
+    else:
+        app_summaries[app_name] = "(no commits this week)"
+
+# Find team updates section and pre-fill "What I did last week"
+team_row = None
+for i, row in enumerate(all_vals):
+    if "TEAM UPDATES" in str(row[0]):
+        team_row = i + 1
+        break
+
+if team_row:
+    for i in range(team_row + 1, team_row + 8):
+        if i <= len(all_vals):
+            cell_val = str(all_vals[i-1][0])
+            for app_name, summary in app_summaries.items():
+                if app_name.lower() in cell_val.lower():
+                    ws.update(f"B{i}", [[summary]], value_input_option="USER_ENTERED")
+                    break
+
+# Pre-fill PRD progress "current state" with recent activity summary
+prd_row = None
+for i, row in enumerate(all_vals):
+    if "PRD PROGRESS" in str(row[0]):
+        prd_row = i + 1
+        break
+
+if prd_row:
+    for i in range(prd_row + 1, prd_row + 8):
+        if i <= len(all_vals):
+            cell_val = str(all_vals[i-1][0])
+            for app_name, summary in app_summaries.items():
+                if app_name.lower() in cell_val.lower():
+                    if summary != "(no commits this week)":
+                        ws.update(f"B{i}", [[summary[:200]]], value_input_option="USER_ENTERED")
+                    else:
+                        ws.update(f"B{i}", [["No activity this week"]], value_input_option="USER_ENTERED")
+                    break
+
+print("Sheet pre-filled with GitHub activity")
+PYEOF
+
 # ── 4. Send to Lark ────────────────────────────────────────────────
 LARK_TEXT=$(echo "$AGENDA" | sed 's/\[\[\([^]|]*\)\]\]/\1/g; s/\[\[[^|]*|\([^]]*\)\]\]/\1/g')
 

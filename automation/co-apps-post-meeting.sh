@@ -147,6 +147,8 @@ API_KEY = os.environ["FIREFLIES_API_KEY"]
 query = """{
     transcript(id: "$TRANSCRIPT_ID") {
         title
+        audio_url
+        video_url
         sentences {
             text
             speaker_name
@@ -180,8 +182,13 @@ sentences = transcript_data.get("sentences", [])
 summary = transcript_data.get("summary", {})
 title = transcript_data.get("title", "CO Apps Meeting")
 
-# Print title first
+audio_url = transcript_data.get("audio_url", "")
+video_url = transcript_data.get("video_url", "")
+recording_url = video_url or audio_url or ""
+
+# Print metadata first
 print(f"TITLE: {title}")
+print(f"RECORDING_URL: {recording_url}")
 print(f"SUMMARY: {summary.get('overview', 'N/A')}")
 print(f"ACTION_ITEMS: {summary.get('action_items', 'N/A')}")
 print("---TRANSCRIPT---")
@@ -399,7 +406,13 @@ log "State updated"
 
 # ── 6. Save to Obsidian ───────────────────────────────────────────
 MEETING_TITLE=$(echo "$TRANSCRIPT" | head -1 | sed 's/^TITLE: //')
+RECORDING_URL=$(echo "$TRANSCRIPT" | grep "^RECORDING_URL:" | sed 's/^RECORDING_URL: //')
 OBSIDIAN_FILE="$OBSIDIAN_DIR/${TODAY} CO Apps Meeting.md"
+
+RECORDING_LINE=""
+if [[ -n "$RECORDING_URL" && "$RECORDING_URL" != "None" ]]; then
+  RECORDING_LINE="recording_url: $RECORDING_URL"
+fi
 
 cat > "$OBSIDIAN_FILE" << OBSEOF
 ---
@@ -408,6 +421,7 @@ type: meeting-notes
 meeting: CO Apps Weekly
 source: fireflies
 transcript_id: $TRANSCRIPT_ID
+${RECORDING_LINE}
 ---
 
 # CO Apps Weekly Meeting -- $TODAY
@@ -449,6 +463,17 @@ if [[ -f "$EXCALIDRAW_LINK" ]]; then
 **Architecture:** [Excalidraw Diagram](${EX_URL})"
   fi
 fi
+
+# Append recording link if available
+if [[ -n "$RECORDING_URL" && "$RECORDING_URL" != "None" ]]; then
+  LARK_TEXT="${LARK_TEXT}
+**Recording:** [Listen to meeting](${RECORDING_URL})"
+fi
+
+# Append sheet link
+SHEET_URL="https://docs.google.com/spreadsheets/d/1HaT_811PWs-4p-uc4VUM-i6PYLRbwV0YHjt8DjWfIiM"
+LARK_TEXT="${LARK_TEXT}
+**Meeting Sheet:** [View auto-filled notes](${SHEET_URL})"
 
 curl -s -X POST "$LARK_CO_APPS_WEBHOOK" \
   -H "Content-Type: application/json" \
