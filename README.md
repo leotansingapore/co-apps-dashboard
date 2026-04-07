@@ -2,6 +2,23 @@
 
 Central hub for the Catalyst Outsource (CO) Apps ecosystem -- product requirements, architecture diagrams, and weekly meeting automation.
 
+## Quick Links
+
+| What | Link |
+|------|------|
+| **Google Meet (weekly)** | https://meet.google.com/igs-arbe-ntm |
+| **Meeting Sheet** | https://docs.google.com/spreadsheets/d/1HaT_811PWs-4p-uc4VUM-i6PYLRbwV0YHjt8DjWfIiM |
+| **Ecosystem PRD** | [prds/ECOSYSTEM-PRD.md](prds/ECOSYSTEM-PRD.md) |
+| **All PRDs** | [prds/](prds/) |
+
+| App PRD | Repo |
+|---------|------|
+| [Catalyst Opus PRD](prds/catalyst-opus/PRD.md) | [catalyst-opus](https://github.com/leotansingapore/catalyst-opus) |
+| [HourHive Buddy PRD](prds/hourhive-buddy/PRD.md) | [hourhive-buddy](https://github.com/leotansingapore/hourhive-buddy) |
+| [Sales Portal PRD](prds/outsource-sales-portal-magic/PRD.md) | [outsource-sales-portal-magic](https://github.com/leotansingapore/outsource-sales-portal-magic) |
+| [Catalyst Refresh Glow PRD](prds/catalyst-refresh-glow/PRD.md) | [catalyst-refresh-glow](https://github.com/leotansingapore/catalyst-refresh-glow) |
+| [Partner Hub PRD](prds/partner-hub-40/PRD.md) | [partner-hub-40](https://github.com/leotansingapore/partner-hub-40) |
+
 ## The Ecosystem
 
 Five apps that power CO's virtual assistant outsourcing business:
@@ -125,8 +142,6 @@ The [`architecture.excalidraw`](architecture.excalidraw) file contains a visual 
 - **Notifications:** Lark webhooks
 - **Scheduling:** macOS launchd
 
-## Links
+## Workflow SOP
 
-- **Google Meet (weekly):** https://meet.google.com/igs-arbe-ntm
-- **Meeting Sheet:** https://docs.google.com/spreadsheets/d/1HaT_811PWs-4p-uc4VUM-i6PYLRbwV0YHjt8DjWfIiM
-- **Workflow SOP:** [automation/co_apps_meeting.md](automation/co_apps_meeting.md)
+Full documentation: [automation/co_apps_meeting.md](automation/co_apps_meeting.md)

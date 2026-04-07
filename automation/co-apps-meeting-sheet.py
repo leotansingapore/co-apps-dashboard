@@ -287,6 +287,66 @@ def main():
     }
     spreadsheet.batch_update(body)
 
+    # ── Quick Links tab ──
+    try:
+        ql = spreadsheet.worksheet("Quick Links")
+        ql.clear()
+    except Exception:
+        ql = spreadsheet.add_worksheet(title="Quick Links", rows=30, cols=3)
+
+    links = [
+        ["CO Apps -- Quick Links", "", ""],
+        ["", "", ""],
+        ["Weekly Meeting", "", ""],
+        ['=HYPERLINK("https://meet.google.com/igs-arbe-ntm","Join Google Meet")', "Tuesdays 4:00-5:00 PM SGT", ""],
+        ['=HYPERLINK("https://docs.google.com/spreadsheets/d/1HaT_811PWs-4p-uc4VUM-i6PYLRbwV0YHjt8DjWfIiM","Meeting Sheet")', "Auto-filled after each meeting", ""],
+        ["", "", ""],
+        ["Product Requirements (PRDs)", "", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/ECOSYSTEM-PRD.md","Ecosystem PRD")', "How all 5 apps connect", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-opus/PRD.md","Catalyst Opus PRD")', "Client dashboard, SSO, tasks, hiring", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/hourhive-buddy/PRD.md","HourHive Buddy PRD")', "Time tracking, EOD reports, payroll", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/outsource-sales-portal-magic/PRD.md","Sales Portal PRD")', "CRM, proposals, Stripe payments", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-refresh-glow/PRD.md","Catalyst Refresh Glow PRD")', "Marketing website, SEO", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/partner-hub-40/PRD.md","Partner Hub PRD")', "Affiliate portal, commissions", ""],
+        ["", "", ""],
+        ["GitHub Repos", "", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard","CO Apps Dashboard")', "This repo -- PRDs, automation, diagrams", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/catalyst-opus","Catalyst Opus")', "Warren", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/hourhive-buddy","HourHive Buddy")', "Jilian", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/outsource-sales-portal-magic","Sales Portal")', "", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/catalyst-refresh-glow","Catalyst Refresh Glow")', "", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/partner-hub-40","Partner Hub")', "", ""],
+    ]
+
+    ql.update(range_name="A1", values=links, value_input_option="USER_ENTERED")
+
+    # Format headers
+    ql.format("A1:C1", {
+        "backgroundColor": {"red": 0.12, "green": 0.12, "blue": 0.45},
+        "textFormat": {"bold": True, "fontSize": 14,
+                       "foregroundColor": {"red": 1, "green": 1, "blue": 1}},
+    })
+    for label in ["Weekly Meeting", "Product Requirements (PRDs)", "GitHub Repos"]:
+        for i, row in enumerate(links):
+            if row[0] == label:
+                ql.format(f"A{i+1}:C{i+1}", {
+                    "backgroundColor": {"red": 0.15, "green": 0.15, "blue": 0.15},
+                    "textFormat": {"bold": True,
+                                   "foregroundColor": {"red": 1, "green": 1, "blue": 1}},
+                })
+
+    # Column widths for Quick Links
+    spreadsheet.batch_update({"requests": [
+        {"updateDimensionProperties": {
+            "range": {"sheetId": ql.id, "dimension": "COLUMNS",
+                      "startIndex": 0, "endIndex": 1},
+            "properties": {"pixelSize": 300}, "fields": "pixelSize"}},
+        {"updateDimensionProperties": {
+            "range": {"sheetId": ql.id, "dimension": "COLUMNS",
+                      "startIndex": 1, "endIndex": 2},
+            "properties": {"pixelSize": 350}, "fields": "pixelSize"}},
+    ]})
+
     # Remove default Sheet1 if exists
     try:
         default = spreadsheet.worksheet("Sheet1")
