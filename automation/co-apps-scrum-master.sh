@@ -11,7 +11,7 @@ REPOS=(
   "leotansingapore/partner-hub-40"
 )
 
-ENV_FILE="$HOME/Documents/New project/.env"
+ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
 STATE_FILE="$HOME/.local/share/co-apps-meeting/state.json"
 LOG_FILE="$HOME/.local/log/co-apps-meeting.log"
 TODAY=$(date '+%Y-%m-%d')

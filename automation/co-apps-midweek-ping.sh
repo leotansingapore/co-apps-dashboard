@@ -11,7 +11,7 @@ REPOS=(
   "leotansingapore/partner-hub-40"
 )
 
-ENV_FILE="$HOME/Documents/New project/.env"
+ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
 STATE_FILE="$HOME/.local/share/co-apps-meeting/state.json"
 LOG_FILE="$HOME/.local/log/co-apps-meeting.log"
 TODAY=$(date '+%Y-%m-%d')
@@ -117,4 +117,8 @@ PAYLOAD
 )" > /dev/null 2>&1
 
 log "Mid-week ping sent ($TOTAL_COMMITS commits, $ACTIVE_REPOS active repos)"
+
+# Refresh dashboard with latest week-in-progress state
+"$HOME/.local/bin/co-apps-sync-dashboard.sh" 2>> "$LOG_FILE" || log "Dashboard sync failed (non-fatal)"
+
 echo "CO Apps mid-week ping sent: $TODAY"

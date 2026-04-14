@@ -3,7 +3,7 @@
 # Sends a simple reminder with Google Meet link
 set -euo pipefail
 
-ENV_FILE="$HOME/Documents/New project/.env"
+ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
 LOG_FILE="$HOME/.local/log/co-apps-meeting.log"
 STATE_FILE="$HOME/.local/share/co-apps-meeting/state.json"
 TODAY=$(date '+%Y-%m-%d')

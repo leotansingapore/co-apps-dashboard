@@ -3,7 +3,7 @@
 # Fetches Fireflies transcript, analyzes with Claude CLI, creates GitHub issues
 set -euo pipefail
 
-ENV_FILE="$HOME/Documents/New project/.env"
+ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
 STATE_FILE="$HOME/.local/share/co-apps-meeting/state.json"
 LOG_FILE="$HOME/.local/log/co-apps-meeting.log"
 OBSIDIAN_DIR="$HOME/Documents/Obsidian Vault/Meetings/CO Apps"
@@ -666,5 +666,9 @@ fi
 # ── 9. Dispatch Ralph tasks from sheet ─────────────────────────────
 log "Dispatching Ralph tasks"
 cd "$HOME/Documents/New project" && python3 "$HOME/.local/bin/co-apps-ralph-dispatch.py" 2>> "$LOG_FILE" || log "Ralph dispatch failed (non-fatal)"
+
+# ── 10. Sync dashboard repo + regenerate GitHub Pages + Lark notify ──
+log "Syncing dashboard repo"
+"$HOME/.local/bin/co-apps-sync-dashboard.sh" 2>> "$LOG_FILE" || log "Dashboard sync failed (non-fatal)"
 
 echo "CO Apps post-meeting analysis complete: $TODAY"
