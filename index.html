@@ -6,15 +6,9 @@
 <title>CO Apps Dashboard</title>
 <style>
   :root {
-    --bg: #0b0d12;
-    --panel: #12151c;
-    --panel-2: #171b24;
-    --border: #232834;
-    --text: #e6e8ee;
-    --muted: #8a92a3;
-    --accent: #6ea8ff;
-    --accent-2: #7ae0b6;
-    --warn: #ffb870;
+    --bg: #0b0d12; --panel: #12151c; --panel-2: #171b24;
+    --border: #232834; --text: #e6e8ee; --muted: #8a92a3;
+    --accent: #6ea8ff; --accent-2: #7ae0b6;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
@@ -36,6 +30,7 @@
   .card .owner { display: inline-block; margin-top: 8px; font-size: 11px; color: var(--accent-2); background: rgba(122,224,182,0.08); padding: 2px 8px; border-radius: 999px; }
   .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; }
   .pill { background: var(--panel-2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; }
+  .pill.muted { color: var(--muted); }
   .quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
   .quick a { display: block; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; color: var(--text); }
   .quick a .l { font-size: 13px; color: var(--muted); display: block; margin-bottom: 2px; }
@@ -51,7 +46,7 @@
 <header>
   <div>
     <h1>CO Apps Dashboard <span class="badge">weekly meeting hub</span></h1>
-    <div class="sub">Central hub for the Catalyst Outsource (CO) ecosystem &mdash; PRDs, architecture, and weekly meeting automation.</div>
+    <div class="sub">Central hub for the Catalyst Outsource (CO) ecosystem -- PRDs, architecture, and weekly meeting automation.</div>
   </div>
 </header>
 
@@ -69,7 +64,7 @@
 <div class="grid grid-2">
   <div class="card">
     <h3>Catalyst Opus</h3>
-    <p>Client dashboard &mdash; task management, messaging, hiring pipeline, invoicing, OAuth SSO authority.</p>
+    <p>Client dashboard -- task management, messaging, hiring pipeline, invoicing, OAuth SSO authority.</p>
     <span class="owner">Owner: Warren</span>
     <div class="links">
       <a class="pill" href="prds/catalyst-opus/PRD.md">PRD</a>
@@ -78,7 +73,7 @@
   </div>
   <div class="card">
     <h3>HourHive Buddy</h3>
-    <p>Time tracker &mdash; EOD reports, screenshots, payroll, leave requests, productivity analytics.</p>
+    <p>Time tracker -- EOD reports, screenshots, payroll, leave requests, productivity analytics.</p>
     <span class="owner">Owner: Jilian</span>
     <div class="links">
       <a class="pill" href="prds/hourhive-buddy/PRD.md">PRD</a>
@@ -87,7 +82,8 @@
   </div>
   <div class="card">
     <h3>Sales Portal</h3>
-    <p>CRM + onboarding &mdash; lead management, proposals, Stripe payments, recruiter notifications.</p>
+    <p>CRM + onboarding -- lead management, proposals, Stripe payments, recruiter notifications.</p>
+    
     <div class="links">
       <a class="pill" href="prds/outsource-sales-portal-magic/PRD.md">PRD</a>
       <a class="pill" href="https://github.com/leotansingapore/outsource-sales-portal-magic">Repo</a>
@@ -95,7 +91,8 @@
   </div>
   <div class="card">
     <h3>Catalyst Refresh Glow</h3>
-    <p>Marketing website &mdash; service pages, SEO, lead capture, pricing.</p>
+    <p>Marketing website -- service pages, SEO, lead capture, pricing.</p>
+    
     <div class="links">
       <a class="pill" href="prds/catalyst-refresh-glow/PRD.md">PRD</a>
       <a class="pill" href="https://github.com/leotansingapore/catalyst-refresh-glow">Repo</a>
@@ -103,7 +100,8 @@
   </div>
   <div class="card">
     <h3>Partner Hub</h3>
-    <p>Affiliate + admin portal &mdash; referral tracking, commissions, partner resources.</p>
+    <p>Affiliate + admin portal -- referral tracking, commissions, partner resources.</p>
+    
     <div class="links">
       <a class="pill" href="prds/partner-hub-40/PRD.md">PRD</a>
       <a class="pill" href="https://github.com/leotansingapore/partner-hub-40">Repo</a>
@@ -121,16 +119,22 @@
 Catalyst Refresh Glow (marketing) --> Sales Portal (conversion)
 Partner Hub (affiliates) --> Sales Portal (referral tracking)</div>
 
+<h2>Recent Meetings</h2>
+<div class="grid grid-2"><div class="card"><h3><a href="swarm-reports/2026-04-08.md">2026-04-08</a></h3><p>Weekly Swarm Report -- 2026-04-08</p></div></div>
+
 <h2>Weekly Automation</h2>
 <div class="grid grid-3">
-  <div class="card"><h3>Monday reminder</h3><p>Pre-meeting ping with last week&rsquo;s action items.</p></div>
-  <div class="card"><h3>Midweek check-in</h3><p>Progress nudge and blocker surface in Lark.</p></div>
-  <div class="card"><h3>Post-meeting digest</h3><p>Excalidraw export, PRD sync, swarm dispatch.</p></div>
+  <div class="card"><h3>Tue 15:00 reminder</h3><p>Pre-meeting ping in Lark with last week's action items.</p></div>
+  <div class="card"><h3>Tue 15:30 agenda</h3><p>Scrum master: 7-day GitHub activity summary across 5 repos.</p></div>
+  <div class="card"><h3>Tue 17:30 post-meeting</h3><p>Fireflies transcript &rarr; sheet auto-fill, issue creation, meeting log.</p></div>
+  <div class="card"><h3>Thu 10:00 midweek ping</h3><p>GitHub activity nudge if progress has stalled.</p></div>
+  <div class="card"><h3>Fri 17:00 digest</h3><p>Week in review with merged PRs, open issues, and blockers.</p></div>
+  <div class="card"><h3>Dashboard auto-sync</h3><p>This page regenerates after post-meeting and midweek runs.</p></div>
 </div>
-<p class="sub" style="margin-top:10px">Scripts live in <a href="automation/">automation/</a> and run via launchd.</p>
+<p class="sub" style="margin-top:10px">Scripts in <a href="automation/">automation/</a>, scheduled via launchd.</p>
 
 <footer>
-  Deployed via GitHub Pages &middot; <a href="https://github.com/leotansingapore/co-apps-dashboard">leotansingapore/co-apps-dashboard</a>
+  Auto-generated 2026-04-14 01:59 UTC &middot; <a href="https://github.com/leotansingapore/co-apps-dashboard">leotansingapore/co-apps-dashboard</a>
 </footer>
 
 </div>
