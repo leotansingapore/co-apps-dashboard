@@ -38,6 +38,11 @@ REPO_MAP = {
     "marketing": "leotansingapore/catalyst-refresh-glow",
     "partner hub": "leotansingapore/partner-hub-40",
     "partner": "leotansingapore/partner-hub-40",
+    "tavus talent spotter": "leotansingapore/tavus-talent-spotter-15b98171",
+    "tavus": "leotansingapore/tavus-talent-spotter-15b98171",
+    "talent spotter": "leotansingapore/tavus-talent-spotter-15b98171",
+    "recruitment portal": "leotansingapore/tavus-talent-spotter-15b98171",
+    "recruitment": "leotansingapore/tavus-talent-spotter-15b98171",
 }
 
 DRY_RUN = "--dry-run" in sys.argv

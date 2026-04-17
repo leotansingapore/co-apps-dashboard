@@ -9,6 +9,7 @@ REPOS=(
   "leotansingapore/outsource-sales-portal-magic"
   "leotansingapore/catalyst-refresh-glow"
   "leotansingapore/partner-hub-40"
+  "leotansingapore/tavus-talent-spotter-15b98171"
 )
 
 ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"

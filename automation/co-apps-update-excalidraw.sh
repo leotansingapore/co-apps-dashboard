@@ -17,7 +17,7 @@ log "Updating CO Apps Excalidraw diagram"
 # Use cached repo status or fallback
 if [[ ! -f "$REPO_STATUS" ]]; then
   log "No repo_status.json found, using defaults"
-  REPO_DATA='[{"name":"hourhive-buddy","desc":"VA Analytics","contributor":"Jilian Garette","issues":0,"status":"unknown"},{"name":"catalyst-opus","desc":"Task Management","contributor":"Warren Apit","issues":0,"status":"unknown"},{"name":"outsource-sales-portal-magic","desc":"Sales Portal","contributor":"Lovable Bot","issues":0,"status":"unknown"},{"name":"catalyst-refresh-glow","desc":"Marketing Website","contributor":"Lovable Bot","issues":0,"status":"unknown"},{"name":"partner-hub-40","desc":"Partner Hub","contributor":"Lovable Bot","issues":0,"status":"unknown"}]'
+  REPO_DATA='[{"name":"hourhive-buddy","desc":"VA Analytics","contributor":"Jilian Garette","issues":0,"status":"unknown"},{"name":"catalyst-opus","desc":"Task Management","contributor":"Warren Apit","issues":0,"status":"unknown"},{"name":"outsource-sales-portal-magic","desc":"Sales Portal","contributor":"Lovable Bot","issues":0,"status":"unknown"},{"name":"catalyst-refresh-glow","desc":"Marketing Website","contributor":"Lovable Bot","issues":0,"status":"unknown"},{"name":"partner-hub-40","desc":"Partner Hub","contributor":"Lovable Bot","issues":0,"status":"unknown"},{"name":"tavus-talent-spotter-15b98171","desc":"Recruitment Portal","contributor":"Jilian Garette","issues":0,"status":"unknown"}]'
 else
   REPO_DATA=$(cat "$REPO_STATUS")
 fi

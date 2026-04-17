@@ -31,6 +31,7 @@ APPS = [
     {"name": "Sales Portal", "repo": "outsource-sales-portal-magic", "owner": ""},
     {"name": "Catalyst Refresh Glow", "repo": "catalyst-refresh-glow", "owner": ""},
     {"name": "Partner Hub", "repo": "partner-hub-40", "owner": ""},
+    {"name": "Tavus Talent Spotter", "repo": "tavus-talent-spotter-15b98171", "owner": "Jilian"},
 ]
 
 
@@ -103,6 +104,7 @@ def main():
         "Sales Portal": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/outsource-sales-portal-magic/PRD.md",
         "Catalyst Refresh Glow": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-refresh-glow/PRD.md",
         "Partner Hub": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/partner-hub-40/PRD.md",
+        "Tavus Talent Spotter": "https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/tavus-talent-spotter-15b98171/PRD.md",
     }
 
     for app in APPS:
@@ -185,6 +187,7 @@ def main():
         "Sales Portal",
         "Catalyst Refresh Glow",
         "Partner Hub",
+        "Tavus Talent Spotter",
         "General / Cross-app",
     ]
     priority_choices = ["High", "Medium", "Low"]
@@ -203,7 +206,7 @@ def main():
         if row[0] == "NEW ACTION ITEMS (fill in during meeting)":
             action_item_rows = list(range(i + 1, i + 1 + 8))
         if row[0] == "PRD PROGRESS -- WHERE WE ARE vs WHERE WE WANT TO BE":
-            prd_progress_rows = list(range(i + 2, i + 2 + 5))  # 5 app rows
+            prd_progress_rows = list(range(i + 2, i + 2 + 6))  # 6 app rows
 
     def make_dropdown(sheet_id, row_start, row_end, col, values):
         """Create a data validation dropdown rule."""
@@ -308,6 +311,7 @@ def main():
         ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/outsource-sales-portal-magic/PRD.md","Sales Portal PRD")', "CRM, proposals, Stripe payments", ""],
         ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/catalyst-refresh-glow/PRD.md","Catalyst Refresh Glow PRD")', "Marketing website, SEO", ""],
         ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/partner-hub-40/PRD.md","Partner Hub PRD")', "Affiliate portal, commissions", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard/blob/main/prds/tavus-talent-spotter-15b98171/PRD.md","Tavus Talent Spotter PRD")', "Recruitment portal, AI video screening", ""],
         ["", "", ""],
         ["GitHub Repos", "", ""],
         ['=HYPERLINK("https://github.com/leotansingapore/co-apps-dashboard","CO Apps Dashboard")', "This repo -- PRDs, automation, diagrams", ""],
@@ -316,6 +320,7 @@ def main():
         ['=HYPERLINK("https://github.com/leotansingapore/outsource-sales-portal-magic","Sales Portal")', "", ""],
         ['=HYPERLINK("https://github.com/leotansingapore/catalyst-refresh-glow","Catalyst Refresh Glow")', "", ""],
         ['=HYPERLINK("https://github.com/leotansingapore/partner-hub-40","Partner Hub")', "", ""],
+        ['=HYPERLINK("https://github.com/leotansingapore/tavus-talent-spotter-15b98171","Tavus Talent Spotter")', "Jilian", ""],
     ]
 
     ql.update(range_name="A1", values=links, value_input_option="USER_ENTERED")

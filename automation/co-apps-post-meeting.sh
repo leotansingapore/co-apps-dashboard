@@ -224,12 +224,13 @@ echo "$TRANSCRIPT" > "$TMPDIR_REPORT/transcript.txt"
 
 ANALYSIS=$(claude -p --model sonnet "$(cat "$TMPDIR_REPORT/transcript.txt")
 
-You are a scrum master analyzing a CO Apps team meeting transcript. The team works on 5 apps:
+You are a scrum master analyzing a CO Apps team meeting transcript. The team works on 6 apps:
 - [hourhive-buddy](https://github.com/leotansingapore/hourhive-buddy): VA management and analytics
 - [catalyst-opus](https://github.com/leotansingapore/catalyst-opus): Task management platform
 - [outsource-sales-portal-magic](https://github.com/leotansingapore/outsource-sales-portal-magic): Sales portal
 - [catalyst-refresh-glow](https://github.com/leotansingapore/catalyst-refresh-glow): Marketing website
 - [partner-hub-40](https://github.com/leotansingapore/partner-hub-40): Partner hub
+- [tavus-talent-spotter-15b98171](https://github.com/leotansingapore/tavus-talent-spotter-15b98171): Recruitment portal
 
 IMPORTANT: When mentioning a repo name, always hyperlink it using markdown: [repo-name](https://github.com/leotansingapore/repo-name).
 
@@ -253,7 +254,7 @@ Items that need follow-up in the next meeting.
 IMPORTANT: At the very end of your response, output a JSON array of action items wrapped in triple backticks with json tag. Each item must have these exact fields:
 - assignee: person's name (string)
 - description: what needs to be done (string)
-- repo: one of hourhive-buddy, catalyst-opus, outsource-sales-portal-magic, catalyst-refresh-glow, partner-hub-40, or general (string)
+- repo: one of hourhive-buddy, catalyst-opus, outsource-sales-portal-magic, catalyst-refresh-glow, partner-hub-40, tavus-talent-spotter-15b98171, or general (string)
 
 Example:
 \`\`\`json

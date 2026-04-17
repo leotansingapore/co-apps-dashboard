@@ -20,6 +20,7 @@ REPOS=(
   "leotansingapore/outsource-sales-portal-magic"
   "leotansingapore/catalyst-refresh-glow"
   "leotansingapore/partner-hub-40"
+  "leotansingapore/tavus-talent-spotter-15b98171"
 )
 
 # Temp dir

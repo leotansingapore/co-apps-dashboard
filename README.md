@@ -18,10 +18,11 @@ Central hub for the Catalyst Outsource (CO) Apps ecosystem -- product requiremen
 | [Sales Portal PRD](prds/outsource-sales-portal-magic/PRD.md) | [outsource-sales-portal-magic](https://github.com/leotansingapore/outsource-sales-portal-magic) |
 | [Catalyst Refresh Glow PRD](prds/catalyst-refresh-glow/PRD.md) | [catalyst-refresh-glow](https://github.com/leotansingapore/catalyst-refresh-glow) |
 | [Partner Hub PRD](prds/partner-hub-40/PRD.md) | [partner-hub-40](https://github.com/leotansingapore/partner-hub-40) |
+| [Tavus Talent Spotter PRD](prds/tavus-talent-spotter-15b98171/PRD.md) | [tavus-talent-spotter-15b98171](https://github.com/leotansingapore/tavus-talent-spotter-15b98171) |
 
 ## The Ecosystem
 
-Five apps that power CO's virtual assistant outsourcing business:
+Six apps that power CO's virtual assistant outsourcing business:
 
 | App | What it does | Owner | Repo |
 |-----|-------------|-------|------|
@@ -30,6 +31,7 @@ Five apps that power CO's virtual assistant outsourcing business:
 | **Sales Portal** | CRM + onboarding -- lead management, proposals, Stripe payments, recruiter notifications | -- | [outsource-sales-portal-magic](https://github.com/leotansingapore/outsource-sales-portal-magic) |
 | **Catalyst Refresh Glow** | Marketing website -- service pages, SEO, lead capture, pricing | -- | [catalyst-refresh-glow](https://github.com/leotansingapore/catalyst-refresh-glow) |
 | **Partner Hub** | Affiliate + admin portal -- referral tracking, commissions, partner resources | -- | [partner-hub-40](https://github.com/leotansingapore/partner-hub-40) |
+| **Tavus Talent Spotter** | Recruitment portal -- candidate intake, AI video screening via Tavus, hiring pipeline | Jilian | [tavus-talent-spotter-15b98171](https://github.com/leotansingapore/tavus-talent-spotter-15b98171) |
 
 ### How they connect
 
@@ -59,6 +61,7 @@ prds/
   outsource-sales-portal-magic/  # Sales portal requirements
   catalyst-refresh-glow/  # Marketing site requirements
   partner-hub-40/         # Partner hub requirements
+  tavus-talent-spotter-15b98171/ # Recruitment portal requirements
 ```
 
 ## Weekly Meeting Automation
@@ -68,12 +71,12 @@ Every Tuesday, three automations run to support the CO Apps weekly scrum call:
 | Time (SGT) | What happens | Script |
 |------------|-------------|--------|
 | **3:00 PM** | Lark reminder sent to the team with Google Meet link | [`co-apps-meeting-reminder.sh`](automation/co-apps-meeting-reminder.sh) |
-| **3:30 PM** | Scrum agenda posted to Lark (GitHub activity from all 5 repos) + Google Sheet updated | [`co-apps-scrum-master.sh`](automation/co-apps-scrum-master.sh) |
+| **3:30 PM** | Scrum agenda posted to Lark (GitHub activity from all 6 repos) + Google Sheet updated | [`co-apps-scrum-master.sh`](automation/co-apps-scrum-master.sh) |
 | **5:30 PM** | Fireflies transcript analyzed, action items become GitHub issues | [`co-apps-post-meeting.sh`](automation/co-apps-post-meeting.sh) |
 
 ### What the automation does
 
-1. **Pre-meeting** -- Fetches commits, PRs, and issues from all 5 repos. Uses Claude CLI to generate a scrum-style agenda. Posts to Lark with clickable repo links and a Google Meet button.
+1. **Pre-meeting** -- Fetches commits, PRs, and issues from all 6 repos. Uses Claude CLI to generate a scrum-style agenda. Posts to Lark with clickable repo links and a Google Meet button.
 
 2. **Meeting sheet** -- Creates a Google Sheet tab for each meeting with sections for team updates, PRD progress tracking, discussion topics, action items, and AI agent task requests.
 

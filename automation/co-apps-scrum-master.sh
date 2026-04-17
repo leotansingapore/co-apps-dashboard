@@ -9,6 +9,7 @@ REPOS=(
   "leotansingapore/outsource-sales-portal-magic"
   "leotansingapore/catalyst-refresh-glow"
   "leotansingapore/partner-hub-40"
+  "leotansingapore/tavus-talent-spotter-15b98171"
 )
 
 ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
@@ -100,6 +101,7 @@ repos = [
     ("outsource-sales-portal-magic", "Sales Portal", "Lovable Bot"),
     ("catalyst-refresh-glow", "Marketing Website", "Lovable Bot"),
     ("partner-hub-40", "Partner Hub", "Lovable Bot"),
+    ("tavus-talent-spotter-15b98171", "Recruitment Portal", "Jilian Garette"),
 ]
 results = []
 for name, desc, contributor in repos:
@@ -152,7 +154,7 @@ You are a scrum master preparing a weekly meeting agenda for the CO Apps team. B
 IMPORTANT: When mentioning a repo name, always hyperlink it using Lark markdown format: [repo-name](https://github.com/leotansingapore/repo-name). For example: [catalyst-opus](https://github.com/leotansingapore/catalyst-opus).
 
 **Per-Repo Progress**
-For each of the 5 repos, write 1-3 bullet points summarizing what was accomplished this week. Group by themes (features, fixes, integrations). Name contributors where visible. Hyperlink each repo name.
+For each of the 6 repos, write 1-3 bullet points summarizing what was accomplished this week. Group by themes (features, fixes, integrations). Name contributors where visible. Hyperlink each repo name.
 
 **Stale Repos**
 Flag any repos with no activity in 5+ days. Suggest whether to discuss or deprioritize.
@@ -207,6 +209,8 @@ contributor_map = {
     "warren apit": ("Warren", "Catalyst Opus"),
     "warren": ("Warren", "Catalyst Opus"),
 }
+# Note: Jilian owns both HourHive Buddy and Tavus Talent Spotter -- contributor_map returns
+# her "primary" app for author attribution; app summaries below are keyed off repo-name -> app-name.
 
 repos = [
     ("leotansingapore/hourhive-buddy", "HourHive Buddy"),
@@ -214,6 +218,7 @@ repos = [
     ("leotansingapore/outsource-sales-portal-magic", "Sales Portal"),
     ("leotansingapore/catalyst-refresh-glow", "Catalyst Refresh Glow"),
     ("leotansingapore/partner-hub-40", "Partner Hub"),
+    ("leotansingapore/tavus-talent-spotter-15b98171", "Tavus Talent Spotter"),
 ]
 
 # Gather commit summaries per app

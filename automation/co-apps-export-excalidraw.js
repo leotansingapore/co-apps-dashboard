@@ -26,6 +26,7 @@ async function main() {
       { name: 'outsource-sales-portal-magic', desc: 'Sales Portal', contributor: 'Lovable Bot', status: 'active', issues: 0, pushed: 'unknown' },
       { name: 'catalyst-refresh-glow', desc: 'Marketing Website', contributor: 'Lovable Bot', status: 'active', issues: 0, pushed: 'unknown' },
       { name: 'partner-hub-40', desc: 'Partner Hub', contributor: 'Lovable Bot', status: 'stale', issues: 0, pushed: 'unknown' },
+      { name: 'tavus-talent-spotter-15b98171', desc: 'Recruitment Portal', contributor: 'Jilian Garette', status: 'active', issues: 0, pushed: 'unknown' },
     ];
   }
 
@@ -151,6 +152,11 @@ async function main() {
       features: ['Google Sign-in', 'Magic link auth', 'Partner dashboard', 'Resource sharing'],
       stack: 'React + Supabase',
     },
+    'tavus-talent-spotter-15b98171': {
+      desc: 'Recruitment Portal',
+      features: ['Candidate intake + screening', 'Tavus AI video interviews', 'Hiring pipeline', 'Recruiter workflow'],
+      stack: 'React + Supabase',
+    },
   };
 
   // Colors
@@ -179,8 +185,9 @@ async function main() {
     [startX, row1Y],
     [startX + cardW + gap, row1Y],
     [startX + (cardW + gap) * 2, row1Y],
-    [startX + 0.5 * (cardW + gap), row2Y],
-    [startX + 1.5 * (cardW + gap), row2Y],
+    [startX, row2Y],
+    [startX + cardW + gap, row2Y],
+    [startX + (cardW + gap) * 2, row2Y],
   ];
 
   repos.forEach((repo, i) => {

@@ -27,6 +27,9 @@ APPS = [
     {"name": "Partner Hub", "slug": "partner-hub-40",
      "desc": "Affiliate + admin portal -- referral tracking, commissions, partner resources.",
      "owner": None},
+    {"name": "Tavus Talent Spotter", "slug": "tavus-talent-spotter-15b98171",
+     "desc": "Recruitment portal -- candidate intake, AI video screening via Tavus, hiring pipeline.",
+     "owner": "Jilian"},
 ]
 
 

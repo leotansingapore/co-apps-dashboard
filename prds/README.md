@@ -15,6 +15,7 @@ Start here: **[ECOSYSTEM-PRD.md](ECOSYSTEM-PRD.md)** -- how all 5 apps connect, 
 | **Sales Portal** | [PRD.md](outsource-sales-portal-magic/PRD.md) | Active | CRM, proposals, Stripe payments, client onboarding |
 | **Catalyst Refresh Glow** | [PRD.md](catalyst-refresh-glow/PRD.md) | Active | Marketing website, SEO, lead capture |
 | **Partner Hub** | [PRD.md](partner-hub-40/PRD.md) | Active | Affiliate portal, referral tracking, commissions |
+| **Tavus Talent Spotter** | [PRD.md](tavus-talent-spotter-15b98171/PRD.md) | Active | Recruitment portal, Tavus AI video screening, hiring pipeline |
 
 ## Supporting Documents
 

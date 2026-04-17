@@ -33,7 +33,7 @@ This document defines the ecosystem-level architecture, how the apps connect, sh
 
 ---
 
-## 4. The Five Apps
+## 4. The Six Apps
 
 ### 4.1 Catalyst Opus (Client Dashboard)
 - **Purpose:** Central workspace for clients and VAs -- task management, messaging, hiring, invoicing, credential sharing
@@ -69,6 +69,13 @@ This document defines the ecosystem-level architecture, how the apps connect, sh
 - **Users:** Affiliates, Admin
 - **Repo:** `leotansingapore/partner-hub-40`
 - **PRD:** [partner-hub-40/PRD.md](partner-hub-40/PRD.md)
+
+### 4.6 Tavus Talent Spotter (Recruitment Portal)
+- **Purpose:** Candidate intake, AI video screening via Tavus, and hiring pipeline for recruiters
+- **Role:** Recruitment intake feeding Catalyst Opus hiring workflow
+- **Users:** Recruiters, Candidates, Admin
+- **Repo:** `leotansingapore/tavus-talent-spotter-15b98171`
+- **PRD:** [tavus-talent-spotter-15b98171/PRD.md](tavus-talent-spotter-15b98171/PRD.md)
 
 ---
 
@@ -241,4 +248,5 @@ Each app has its **own independent Supabase instance** (separate PostgreSQL data
 - [Sales Portal PRD](outsource-sales-portal-magic/PRD.md)
 - [Catalyst Refresh Glow PRD](catalyst-refresh-glow/PRD.md)
 - [Partner Hub PRD](partner-hub-40/PRD.md)
+- [Tavus Talent Spotter PRD](tavus-talent-spotter-15b98171/PRD.md)
 - [HourHive Integration Spec](catalyst-opus/HOURHIVE-INTEGRATION.md)
