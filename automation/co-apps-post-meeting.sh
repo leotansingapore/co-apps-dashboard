@@ -178,8 +178,8 @@ except Exception as e:
     sys.exit(1)
 
 transcript_data = data.get("data", {}).get("transcript", {})
-sentences = transcript_data.get("sentences", [])
-summary = transcript_data.get("summary", {})
+sentences = transcript_data.get("sentences") or []
+summary = transcript_data.get("summary") or {}
 title = transcript_data.get("title", "CO Apps Meeting")
 
 audio_url = transcript_data.get("audio_url", "")
