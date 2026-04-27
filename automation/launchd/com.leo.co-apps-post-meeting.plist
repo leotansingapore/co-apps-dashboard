@@ -29,6 +29,10 @@
         <string>/Users/leo/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
         <key>HOME</key>
         <string>/Users/leo</string>
+        <key>LANG</key>
+        <string>en_US.UTF-8</string>
+        <key>LC_ALL</key>
+        <string>en_US.UTF-8</string>
     </dict>
     <key>RunAtLoad</key>
     <false/>

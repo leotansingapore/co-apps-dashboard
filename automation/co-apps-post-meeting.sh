@@ -177,13 +177,19 @@ except Exception as e:
     print(f"ERROR: {e}", file=sys.stderr)
     sys.exit(1)
 
-transcript_data = data.get("data", {}).get("transcript", {})
+transcript_data = (data.get("data") or {}).get("transcript") or {}
+if not isinstance(transcript_data, dict):
+    transcript_data = {}
 sentences = transcript_data.get("sentences") or []
+if not isinstance(sentences, list):
+    sentences = []
 summary = transcript_data.get("summary") or {}
-title = transcript_data.get("title", "CO Apps Meeting")
+if not isinstance(summary, dict):
+    summary = {}
+title = transcript_data.get("title") or "CO Apps Meeting"
 
-audio_url = transcript_data.get("audio_url", "")
-video_url = transcript_data.get("video_url", "")
+audio_url = transcript_data.get("audio_url") or ""
+video_url = transcript_data.get("video_url") or ""
 recording_url = video_url or audio_url or ""
 
 # Print metadata first
@@ -195,8 +201,10 @@ print("---TRANSCRIPT---")
 
 lines = []
 for s in sentences:
-    speaker = s.get("speaker_name", "Unknown")
-    text = s.get("text", "")
+    if not isinstance(s, dict):
+        continue
+    speaker = s.get("speaker_name") or "Unknown"
+    text = s.get("text") or ""
     if text.strip():
         lines.append(f"{speaker}: {text}")
 
