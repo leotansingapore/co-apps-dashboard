@@ -177,7 +177,7 @@ log "Agenda generated (${#AGENDA} chars)"
 
 # ── 3.5. Update Google Sheet with meeting template ─────────────────
 log "Updating Google Sheet"
-SHEET_URL=$(cd "$HOME/Documents/New project" && python3 "$HOME/.local/bin/co-apps-meeting-sheet.py" 2>/dev/null || echo "")
+SHEET_URL=$(cd "$HOME/Documents/New project" && /usr/bin/python3 "$HOME/.local/bin/co-apps-meeting-sheet.py" 2>/dev/null || echo "")
 if [[ -n "$SHEET_URL" ]]; then
   log "Google Sheet updated: $SHEET_URL"
 else
@@ -187,7 +187,7 @@ fi
 
 # ── 3.6. Pre-fill sheet with GitHub commit summaries ──────────────
 log "Pre-filling sheet with GitHub activity"
-cd "$HOME/Documents/New project" && python3 << 'PYEOF' 2>> "$LOG_FILE" || log "Sheet pre-fill failed (non-fatal)"
+cd "$HOME/Documents/New project" && /usr/bin/python3 << 'PYEOF' 2>> "$LOG_FILE" || log "Sheet pre-fill failed (non-fatal)"
 import json, subprocess, sys, os
 sys.path.insert(0, os.path.join(os.environ["HOME"], "Documents/New project/tools"))
 from lib.sheets import get_sheets_client

@@ -147,6 +147,7 @@ API_KEY = os.environ["FIREFLIES_API_KEY"]
 query = """{
     transcript(id: "$TRANSCRIPT_ID") {
         title
+        date
         audio_url
         video_url
         sentences {
@@ -192,8 +193,17 @@ audio_url = transcript_data.get("audio_url") or ""
 video_url = transcript_data.get("video_url") or ""
 recording_url = video_url or audio_url or ""
 
+# Derive meeting date (SGT) from Fireflies timestamp (ms)
+from datetime import datetime, timezone, timedelta
+SGT = timezone(timedelta(hours=8))
+ts = transcript_data.get("date")
+meeting_date = ""
+if isinstance(ts, (int, float)):
+    meeting_date = datetime.fromtimestamp(ts / 1000, tz=SGT).strftime("%Y-%m-%d")
+
 # Print metadata first
 print(f"TITLE: {title}")
+print(f"MEETING_DATE: {meeting_date}")
 print(f"RECORDING_URL: {recording_url}")
 print(f"SUMMARY: {summary.get('overview', 'N/A')}")
 print(f"ACTION_ITEMS: {summary.get('action_items', 'N/A')}")
@@ -221,6 +231,13 @@ if [[ -z "$TRANSCRIPT" ]]; then
   log "Failed to fetch transcript content"
   exit 1
 fi
+
+# Use the meeting's actual date (SGT) for sheet tab, Obsidian filename, state
+MEETING_DATE=$(echo "$TRANSCRIPT" | grep "^MEETING_DATE:" | head -1 | sed 's/^MEETING_DATE: //')
+if [[ -z "$MEETING_DATE" ]]; then
+  MEETING_DATE="$TODAY"
+fi
+log "Meeting date resolved: $MEETING_DATE"
 
 log "Transcript fetched ($(echo "$TRANSCRIPT" | wc -l | tr -d ' ') lines)"
 
@@ -277,14 +294,14 @@ log "Analysis complete (${#ANALYSIS} chars)"
 log "Creating GitHub issues from action items"
 
 # Contributor -> GitHub username mapping
-declare -A GH_USERS
-GH_USERS[jilian garette]=jiliangarette
-GH_USERS[jilian]=jiliangarette
-GH_USERS[warren apit]=warren-apit
-GH_USERS[warren]=warren-apit
+typeset -A GH_USERS
+GH_USERS["jilian garette"]=jiliangarette
+GH_USERS["jilian"]=jiliangarette
+GH_USERS["warren apit"]=warren-apit
+GH_USERS["warren"]=warren-apit
 
 # Extract JSON block and create issues
-ISSUE_RESULTS=$(python3 << PYEOF
+ISSUE_RESULTS=$(python3 - "$MEETING_DATE" << PYEOF
 import json, re, subprocess, sys
 
 analysis = """$ANALYSIS"""
@@ -352,6 +369,10 @@ for item in actions:
         cmd.extend(["--assignee", gh_user])
 
     result = subprocess.run(cmd, capture_output=True, text=True)
+    # Retry without assignee if the only failure was an invalid GitHub user
+    if result.returncode != 0 and gh_user and "could not assign user" in (result.stderr or ""):
+        cmd_no_assignee = [a for a in cmd if a not in ("--assignee", gh_user)]
+        result = subprocess.run(cmd_no_assignee, capture_output=True, text=True)
     issue_url = result.stdout.strip()
 
     # Extract issue number from URL
@@ -372,7 +393,7 @@ for item in actions:
 
 print(json.dumps(results))
 PYEOF
-"$TODAY")
+)
 
 log "Issue creation results: $ISSUE_RESULTS"
 
@@ -386,7 +407,7 @@ try:
 except (FileNotFoundError, json.JSONDecodeError):
     state = {"last_meeting_date": "", "processed_transcripts": [], "action_items": []}
 
-state["last_meeting_date"] = "$TODAY"
+state["last_meeting_date"] = "$MEETING_DATE"
 state["processed_transcripts"].append("$TRANSCRIPT_ID")
 
 # Keep only last 20 processed transcript IDs
@@ -416,7 +437,7 @@ log "State updated"
 # ── 6. Save to Obsidian ───────────────────────────────────────────
 MEETING_TITLE=$(echo "$TRANSCRIPT" | head -1 | sed 's/^TITLE: //')
 RECORDING_URL=$(echo "$TRANSCRIPT" | grep "^RECORDING_URL:" | sed 's/^RECORDING_URL: //')
-OBSIDIAN_FILE="$OBSIDIAN_DIR/${TODAY} CO Apps Meeting.md"
+OBSIDIAN_FILE="$OBSIDIAN_DIR/${MEETING_DATE} CO Apps Meeting.md"
 
 RECORDING_LINE=""
 if [[ -n "$RECORDING_URL" && "$RECORDING_URL" != "None" ]]; then
@@ -425,7 +446,7 @@ fi
 
 cat > "$OBSIDIAN_FILE" << OBSEOF
 ---
-date: $TODAY
+date: $MEETING_DATE
 type: meeting-notes
 meeting: CO Apps Weekly
 source: fireflies
@@ -433,7 +454,7 @@ transcript_id: $TRANSCRIPT_ID
 ${RECORDING_LINE}
 ---
 
-# CO Apps Weekly Meeting -- $TODAY
+# CO Apps Weekly Meeting -- $MEETING_DATE
 
 $ANALYSIS
 OBSEOF
@@ -558,7 +579,7 @@ Rules:
 - Output ONLY the JSON, no markdown fences, no explanation.") 2>> "$LOG_FILE"
 
 if [[ -n "$SHEET_DATA" ]]; then
-  cd "$HOME/Documents/New project" && python3 << PYEOF
+  cd "$HOME/Documents/New project" && /usr/bin/python3 << PYEOF
 import json, sys, os
 sys.path.insert(0, os.path.join(os.environ["HOME"], "Documents/New project/tools"))
 from lib.sheets import get_sheets_client
@@ -566,7 +587,7 @@ from lib.sheets import get_sheets_client
 sheet_id = open(os.path.join(os.environ["HOME"], ".local/share/co-apps-meeting/sheet_id.txt")).read().strip()
 gc = get_sheets_client()
 ss = gc.open_by_key(sheet_id)
-ws = ss.worksheet("$TODAY")
+ws = ss.worksheet("$MEETING_DATE")
 
 try:
     data = json.loads('''$SHEET_DATA''')
@@ -674,7 +695,7 @@ fi
 
 # ── 9. Dispatch Ralph tasks from sheet ─────────────────────────────
 log "Dispatching Ralph tasks"
-cd "$HOME/Documents/New project" && python3 "$HOME/.local/bin/co-apps-ralph-dispatch.py" 2>> "$LOG_FILE" || log "Ralph dispatch failed (non-fatal)"
+cd "$HOME/Documents/New project" && /usr/bin/python3 "$HOME/.local/bin/co-apps-ralph-dispatch.py" 2>> "$LOG_FILE" || log "Ralph dispatch failed (non-fatal)"
 
 # ── 10. Sync dashboard repo + regenerate GitHub Pages + Lark notify ──
 log "Syncing dashboard repo"
