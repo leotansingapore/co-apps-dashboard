@@ -7,6 +7,7 @@
     <string>com.leo.co-apps-reminder</string>
     <key>ProgramArguments</key>
     <array>
+        <string>/opt/homebrew/bin/zsh</string>
         <string>/Users/leo/.local/bin/co-apps-meeting-reminder.sh</string>
     </array>
     <key>StartCalendarInterval</key>

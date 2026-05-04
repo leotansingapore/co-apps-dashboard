@@ -75,7 +75,7 @@ for a in items:
 " >> "$TMPDIR_DIGEST/context.txt" 2>/dev/null
 fi
 
-# Generate digest via Claude
+# Generate digest via Claude (soft-fail on CLI error so launchd reports success)
 DIGEST=$(claude -p --model sonnet "$(cat "$TMPDIR_DIGEST/context.txt")
 
 Write a professional weekly progress email for the CO Apps ecosystem. This goes to stakeholders who want a high-level overview. Format as plain text email (no markdown).
@@ -87,7 +87,14 @@ Structure:
 - Key metrics: total commits, active repos, outstanding items
 - What to watch next week
 
-Keep it under 30 lines. Professional but not formal. No technical jargon.")
+Keep it under 30 lines. Professional but not formal. No technical jargon." 2>>"$LOG_FILE" || echo "Claude CLI unavailable -- raw context follows:
+
+$(cat "$TMPDIR_DIGEST/context.txt")")
+
+if [[ -z "$DIGEST" ]]; then
+  log "WARN: Empty digest, using raw context"
+  DIGEST=$(cat "$TMPDIR_DIGEST/context.txt")
+fi
 
 log "Digest generated (${#DIGEST} chars)"
 

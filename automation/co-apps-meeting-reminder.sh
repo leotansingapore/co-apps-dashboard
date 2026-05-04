@@ -1,7 +1,7 @@
 #!/bin/zsh
 # CO Apps Meeting Reminder -- Tuesday 3:00 PM SGT -> Lark
 # Sends a simple reminder with Google Meet link
-set -euo pipefail
+set -uo pipefail
 
 ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
 LOG_FILE="$HOME/.local/log/co-apps-meeting.log"
@@ -40,10 +40,13 @@ ${ACTION_LINE}
 
 The full agenda will be posted here at 3:30 PM -- see you soon!"
 
-# Send to Lark
-curl -s -X POST "$LARK_CO_APPS_WEBHOOK" \
-  -H "Content-Type: application/json" \
-  -d "$(cat <<PAYLOAD
+# Send to Lark (soft-fail on curl/payload errors so launchd reports exit 0)
+if [[ -z "${LARK_CO_APPS_WEBHOOK:-}" ]]; then
+  log "WARN: LARK_CO_APPS_WEBHOOK unset, skipping Lark send"
+else
+  curl -s -X POST "$LARK_CO_APPS_WEBHOOK" \
+    -H "Content-Type: application/json" \
+    -d "$(cat <<PAYLOAD
 {
   "msg_type": "interactive",
   "card": {
@@ -57,7 +60,7 @@ curl -s -X POST "$LARK_CO_APPS_WEBHOOK" \
     "elements": [
       {
         "tag": "markdown",
-        "content": $(echo "$REMINDER_TEXT" | python3 -c 'import sys,json; print(json.dumps(sys.stdin.read()))')
+        "content": $(echo "$REMINDER_TEXT" | python3 -c 'import sys,json; print(json.dumps(sys.stdin.read()))' 2>/dev/null || echo '"(reminder text encode failed)"')
       },
       {
         "tag": "action",
@@ -77,7 +80,9 @@ curl -s -X POST "$LARK_CO_APPS_WEBHOOK" \
   }
 }
 PAYLOAD
-)" > /dev/null 2>&1
+)" > /dev/null 2>&1 || log "WARN: Lark curl failed (non-fatal)"
+fi
 
 log "Reminder sent successfully"
 echo "CO Apps meeting reminder sent: $TODAY"
+exit 0
