@@ -10,15 +10,16 @@ Central hub for the Catalyst Outsource (CO) Apps ecosystem -- product requiremen
 | **Meeting Sheet** | https://docs.google.com/spreadsheets/d/1HaT_811PWs-4p-uc4VUM-i6PYLRbwV0YHjt8DjWfIiM |
 | **Ecosystem PRD** | [prds/ECOSYSTEM-PRD.md](prds/ECOSYSTEM-PRD.md) |
 | **All PRDs** | [prds/](prds/) |
+| **ECOSYSTEM REVIEW (2026-07-09)** | [reviews/ECOSYSTEM-REVIEW.md](reviews/ECOSYSTEM-REVIEW.md) -- cross-app verdict + prioritized P0-P3 roadmap |
 
-| App PRD | Repo |
-|---------|------|
-| [Catalyst Opus PRD](prds/catalyst-opus/PRD.md) | [catalyst-opus](https://github.com/leotansingapore/catalyst-opus) |
-| [HourHive Buddy PRD](prds/hourhive-buddy/PRD.md) | [hourhive-buddy](https://github.com/leotansingapore/hourhive-buddy) |
-| [Sales Portal PRD](prds/outsource-sales-portal-magic/PRD.md) | [outsource-sales-portal-magic](https://github.com/leotansingapore/outsource-sales-portal-magic) |
-| [Catalyst Refresh Glow PRD](prds/catalyst-refresh-glow/PRD.md) | [catalyst-refresh-glow](https://github.com/leotansingapore/catalyst-refresh-glow) |
-| [Partner Hub PRD](prds/partner-hub-40/PRD.md) | [partner-hub-40](https://github.com/leotansingapore/partner-hub-40) |
-| [Tavus Talent Spotter PRD](prds/tavus-talent-spotter-15b98171/PRD.md) | [tavus-talent-spotter-15b98171](https://github.com/leotansingapore/tavus-talent-spotter-15b98171) |
+| App PRD | Repo | Critical Review |
+|---------|------|-----------------|
+| [Catalyst Opus PRD](prds/catalyst-opus/PRD.md) | [catalyst-opus](https://github.com/leotansingapore/catalyst-opus) | [review](reviews/catalyst-opus.md) |
+| [HourHive Buddy PRD](prds/hourhive-buddy/PRD.md) | [hourhive-buddy](https://github.com/leotansingapore/hourhive-buddy) | [review](reviews/hourhive-buddy.md) |
+| [Sales Portal PRD](prds/outsource-sales-portal-magic/PRD.md) | [outsource-sales-portal-magic](https://github.com/leotansingapore/outsource-sales-portal-magic) | [review](reviews/outsource-sales-portal-magic.md) |
+| [Catalyst Refresh Glow PRD](prds/catalyst-refresh-glow/PRD.md) | [catalyst-refresh-glow](https://github.com/leotansingapore/catalyst-refresh-glow) | [review](reviews/catalyst-refresh-glow.md) |
+| [Partner Hub PRD](prds/partner-hub-40/PRD.md) | [partner-hub-40](https://github.com/leotansingapore/partner-hub-40) | -- |
+| [Tavus Talent Spotter PRD](prds/tavus-talent-spotter-15b98171/PRD.md) | [tavus-talent-spotter-15b98171](https://github.com/leotansingapore/tavus-talent-spotter-15b98171) | [review](reviews/tavus-talent-spotter.md) |
 
 ## The Ecosystem
 
