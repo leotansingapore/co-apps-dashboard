@@ -1,6 +1,6 @@
 # CO Apps — Blockers needing Leo
 
-Last updated: 2026-07-10
+Last updated: 2026-07-11
 
 Everything else from the ecosystem P0 wave + academy rebuild is committed and (per Leo) published. These are the items that need a human hand — mostly secrets and rotations I can't/shouldn't do myself.
 
@@ -23,7 +23,7 @@ Publishing a Lovable app deploys the frontend but may not run `SUPABASE.md` pend
 
 | Repo | Pending migrations |
 |---|---|
-| catalyst-opus | #36 invite-token RLS (P0), #37 routine-assignment notifications, #38 academy engine tables, #39 routine_completions client view-only (A4 backstop) |
+| catalyst-opus | ~~#36–#45 all ran~~ ✅ (verified 2026-07-11 — invite-token RLS, notifications, academy tables, routine RLS, redeploys, btoa re-hash, demo confirms, self-tenant backfill). Remaining: **#46** demo-admin login 500 repair + demo-client role fix (see repo SUPABASE.md). Then **republish** — the whole academy workspace-builder wave (doc/SOP/handoff builders, mobile layout, resume) is on main but not on prod. |
 | hourhive-buddy | sso-data-access token auth (edge fn deploy — see its SUPABASE.md; **do NOT set `SSO_DATA_ACCESS_STRICT` yet** — that's stage 2 below) |
 | tavus-talent-spotter | #P0-SALESPERSON-SCOPING-AND-BRIEF-JOBS (salesperson_email + jobs.notification_id columns) |
 

@@ -2,7 +2,31 @@
 
 **App role:** Client workspace / dashboard + ecosystem SSO authority
 **Reviewed against:** origin/main (fresh clone), PRD.md, HOURHIVE-INTEGRATION.md, ECOSYSTEM-PRD.md
-**Date:** 2026-07-09
+**Date:** 2026-07-09 · **Update:** 2026-07-11 (see addendum below)
+
+---
+
+## 2026-07-11 addendum -- what changed since this review
+
+**Fixed and verified (live QA as client + VA + admin, DB-checked):**
+
+- **Bug #1 (CRITICAL, invite-token role escalation): FIXED** -- #36 replaced the `USING (true)` policies with token-scoped RPCs; policies dropped, edge fn redeployed (2026-07-10).
+- **Bug #5 (credentials in git): FIXED** -- `credentials.txt` removed, all 3 accounts rotated; test-account convention now gitignored `test-accounts.local.md` + docs/TESTING.md.
+- **Bug #7 (btoa "hash"): FIXED** -- #43 re-hashed legacy link passwords to bcrypt across 8 `*_links` tables.
+- **Bug #8 (routine ticks untrustworthy): FIXED** -- #39/#40 RLS: clients are view-only on VA routines, can tick only their own unassigned ones; UI matches (A4).
+- **NEW root-cause found + fixed -- #45 self-tenant backfill:** clients created without `role:'client'` metadata had no `tenant_members` self-tenant, so `orgRole` was null and **every** client area silently bounced to the dashboard. Idempotent backfill applied (71 tenants healed); all client areas verified loading.
+- **UX #1/#3 (client sees an admin console): LARGELY FIXED** -- comms-first slim client sidebar (Messages leads; Task Inbox/Directory/Wiki cut); dashboard-first landing.
+- **UX #7 (generic academy): REPLACED** -- "Success Academy" is now the CO Academy: 17 client + 8 VA (mirror-track) units where each unit **builds a real workspace object** -- inline task assign, real docs (`rich_documents`), a real SOP with ordered steps (`sops`+`sop_steps`) chaining into the routine builder, the Handoff Map worksheet converting straight into assigned tasks, simplified routine dialog, deep-links into every referenced app surface, artifact auto-verification, celebrations, Singapore-first copy, lesson/quiz/apply step pages, mobile-first layout (horizontal unit strip, resume-exactly-where-you-left-off), reviewer preview allowlist.
+- **/blockers** is now a live in-app page (+ docs/BLOCKERS.md twin + CLAUDE.md upkeep rule), designed so Lovable can be told "fix all /blockers" for migration items.
+
+**Still open (unchanged from this review):**
+
+- **Bug #2** Tracker `sso-data-access` caller-asserted role -- stage-1 token validation deployed on the Tracker side; stage-2 migration of ~78 caller sites + strict mode still pending (tracked in hourhive-buddy /admin/blockers).
+- **Bug #3** credential-share key exchange still symmetric (works only when both parties share a password).
+- **Bug #6** OAuth wildcard redirect for first-party `*.lovable.app` clients.
+- **Bug #9** `spreadsheet_shares` still unread by the VA documents view.
+- **Challenged decision #2** three competing hiring surfaces -- unchanged.
+- **Prod retest owed:** academy task-assign silently failed once on the pre-wave prod bundle; retest after the next Lovable publish (all of the above is on main, prod publish pending).
 
 ---
 
