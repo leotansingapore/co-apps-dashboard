@@ -24,9 +24,9 @@
 - **Bug #2** Tracker `sso-data-access` caller-asserted role -- stage-1 token validation deployed on the Tracker side; stage-2 migration of ~78 caller sites + strict mode still pending (tracked in hourhive-buddy /admin/blockers).
 - **Bug #3** credential-share key exchange still symmetric (works only when both parties share a password).
 - **Bug #6** OAuth wildcard redirect for first-party `*.lovable.app` clients.
-- **Bug #9** `spreadsheet_shares` still unread by the VA documents view.
+- ~~**Bug #9** `spreadsheet_shares` unread by the VA documents view~~ — **FIXED** (verified 2026-07-11: `useVADocumentsData` now queries `spreadsheet_shares` and folds trackers into "Shared with me").
 - **Challenged decision #2** three competing hiring surfaces -- unchanged.
-- **Prod retest owed:** academy task-assign silently failed once on the pre-wave prod bundle; retest after the next Lovable publish (all of the above is on main, prod publish pending).
+- ~~**Prod retest owed**~~ — **DONE 2026-07-11**: wave published; prod retest PASSED (task copilot assign created a real DB row; /client/tasks shows it; persistent SOP builder live).
 
 ---
 
