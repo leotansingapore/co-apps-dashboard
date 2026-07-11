@@ -21,9 +21,9 @@
 
 **Still open (unchanged from this review):**
 
-- **Bug #2** Tracker `sso-data-access` caller-asserted role -- stage-1 token validation deployed on the Tracker side; stage-2 migration of ~78 caller sites + strict mode still pending (tracked in hourhive-buddy /admin/blockers).
-- **Bug #3** credential-share key exchange still symmetric (works only when both parties share a password).
-- **Bug #6** OAuth wildcard redirect for first-party `*.lovable.app` clients.
+- **Bug #2** Tracker `sso-data-access` caller-asserted role -- stage-1 (server validates token when present) deployed; **stage-2 caller side DONE 2026-07-11** (hourhive `src/lib/sso-bridge-auth.ts` attaches the SSO bearer to all ~190 call sites at one choke point). Remaining: publish Tracker frontend → verify logs quiet → flip `SSO_DATA_ACCESS_STRICT=true`.
+- **Bug #3** credential-share key exchange still symmetric -- keypair redesign PROPOSED as a decision card on Opus /blockers (2026-07-11), awaiting Leo's green light.
+- **Bug #6** OAuth wildcard redirect -- **FIXED on main 2026-07-11** (wildcard-matched hosts lose auto-approve; consent screen forced). Activates on oauth-server redeploy (blocker card up).
 - ~~**Bug #9** `spreadsheet_shares` unread by the VA documents view~~ — **FIXED** (verified 2026-07-11: `useVADocumentsData` now queries `spreadsheet_shares` and folds trackers into "Shared with me").
 - **Challenged decision #2** three competing hiring surfaces -- unchanged.
 - ~~**Prod retest owed**~~ — **DONE 2026-07-11**: wave published; prod retest PASSED (task copilot assign created a real DB row; /client/tasks shows it; persistent SOP builder live).
