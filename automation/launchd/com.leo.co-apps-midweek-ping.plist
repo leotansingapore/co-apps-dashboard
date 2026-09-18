@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Label</key>
-    <string>com.leo.co-apps-midweek-ping</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/Users/leo/.local/bin/co-apps-midweek-ping.sh</string>
-    </array>
-    <key>StartCalendarInterval</key>
-    <dict>
-        <key>Weekday</key>
-        <integer>4</integer>
-        <key>Hour</key>
-        <integer>10</integer>
-        <key>Minute</key>
-        <integer>0</integer>
-    </dict>
-    <key>StandardOutPath</key>
-    <string>/Users/leo/.local/log/co-apps-meeting.log</string>
-    <key>StandardErrorPath</key>
-    <string>/Users/leo/.local/log/co-apps-meeting.log</string>
-    <key>EnvironmentVariables</key>
-    <dict>
-        <key>PATH</key>
-        <string>/Users/leo/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
-        <key>HOME</key>
-        <string>/Users/leo</string>
-    </dict>
-    <key>RunAtLoad</key>
-    <false/>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>/Users/leo</string>
+		<key>PATH</key>
+		<string>/Users/leo/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+	</dict>
+	<key>Label</key>
+	<string>com.leo.co-apps-midweek-ping</string>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/leo/.local/bin/co-apps-midweek-ping.sh</string>
+	</array>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>StandardErrorPath</key>
+	<string>/Users/leo/.local/log/co-apps-meeting.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/leo/.local/log/co-apps-meeting.log</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>10</integer>
+		<key>Minute</key>
+		<integer>0</integer>
+		<key>Weekday</key>
+		<integer>4</integer>
+	</dict>
 </dict>
 </plist>
