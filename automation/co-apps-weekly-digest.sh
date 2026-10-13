@@ -6,7 +6,10 @@ set -euo pipefail
 ENV_FILE="$HOME/.config/agents.env"; [[ -r "$ENV_FILE" ]] || ENV_FILE="$HOME/Documents/New project/.env"
 LOG_FILE="$HOME/.local/log/co-apps-meeting.log"
 STATE_FILE="$HOME/.local/share/co-apps-meeting/state.json"
-TODAY=$(date '+%Y-%m-%d')
+# A deferred rerun pins the date, so a digest finished after midnight keeps Friday's title.
+TODAY="${CO_APPS_DIGEST_DATE:-$(date '+%Y-%m-%d')}"
+# The fleet wrapper exits 75 on a usage limit; CLAUDE_BIN overrides it for a stub test.
+CLAUDE_BIN="${CLAUDE_BIN:-$HOME/.local/bin/claude-resilient.sh}"
 SINCE=$(date -v-7d '+%Y-%m-%dT00:00:00Z')
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] [digest] $1" >> "$LOG_FILE"; }
@@ -76,7 +79,7 @@ for a in items:
 fi
 
 # Generate digest via Claude (soft-fail on CLI error so launchd reports success)
-DIGEST=$(claude -p --model sonnet "$(cat "$TMPDIR_DIGEST/context.txt")
+DIGEST=$("$CLAUDE_BIN" -p --model sonnet "$(cat "$TMPDIR_DIGEST/context.txt")
 
 Write a professional weekly progress email for the CO Apps ecosystem. This goes to stakeholders who want a high-level overview. Format as plain text email (no markdown).
 
@@ -87,9 +90,18 @@ Structure:
 - Key metrics: total commits, active repos, outstanding items
 - What to watch next week
 
-Keep it under 30 lines. Professional but not formal. No technical jargon." 2>>"$LOG_FILE" || echo "Claude CLI unavailable -- raw context follows:
+Keep it under 30 lines. Professional but not formal. No technical jargon." 2>>"$LOG_FILE") || {
+  RC=$?
+  # A usage limit defers the digest instead of posting the raw-context fallback, so stakeholders get one real digest.
+  if [[ $RC -eq 75 ]]; then
+    log "DEFERRED: Claude usage limit; claude-deferred-retry reruns the $TODAY digest"
+    "$HOME/.local/bin/claude-defer-mark" co-apps-weekly-digest "CO_APPS_DIGEST_DATE=$TODAY $HOME/.local/bin/co-apps-weekly-digest.sh"
+    exit 0
+  fi
+  DIGEST="Claude CLI unavailable -- raw context follows:
 
-$(cat "$TMPDIR_DIGEST/context.txt")")
+$(cat "$TMPDIR_DIGEST/context.txt")"
+}
 
 if [[ -z "$DIGEST" ]]; then
   log "WARN: Empty digest, using raw context"
