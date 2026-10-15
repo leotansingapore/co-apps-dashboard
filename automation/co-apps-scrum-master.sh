@@ -147,7 +147,7 @@ fi
 # ── 3. Generate agenda via Claude CLI ──────────────────────────────
 log "Generating agenda via Claude CLI"
 
-AGENDA=$(claude -p --model sonnet "$(cat "$TMPDIR_REPORT/context.txt")
+AGENDA=$("$HOME/.local/bin/claude-resilient.sh" -p --model sonnet "$(cat "$TMPDIR_REPORT/context.txt")
 
 You are a scrum master preparing a weekly meeting agenda for the CO Apps team. Based on the GitHub activity above, write a concise weekly agenda with these exact sections (use ** for bold headings, no # headers, no code blocks):
 
