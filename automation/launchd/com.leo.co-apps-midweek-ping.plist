@@ -15,7 +15,9 @@
 	<string>Background</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/leo/.local/bin/co-apps-midweek-ping.sh</string>
+		<string>/bin/bash</string>
+		<string>-c</string>
+		<string>/Users/leo/.local/bin/co-apps-midweek-ping.sh; exit $?</string>
 	</array>
 	<key>RunAtLoad</key>
 	<false/>
